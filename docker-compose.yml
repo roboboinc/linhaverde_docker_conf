@@ -21,19 +21,19 @@ services:
     depends_on:
       - db
     ports:
-      - "3000:3000"  # Odoo web interface (accessible via Nginx)
+      - "3000:3000"  
     volumes:
       - ./customs_addons:/mnt/extra-addons
       - ./etc:/etc/odoo
     restart: always
 
   nginx:
-    image: nginx:1.23-alpine  # Choose a suitable Nginx image
+    image: nginx:1.23-alpine  
     depends_on:
       - odoo16
     ports:
-      - "80:80"           # Forward port 80 to Nginx
+      - "80:80"           
+    restart: always
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d  # Mount your Nginx configuration
-      - ./nginx/log:/var/log/nginx       # Optional: Mount Nginx logs
-
+      - ./nginx/conf.d:/etc/nginx/conf.d  
+      - ./nginx/log:/var/log/nginx      

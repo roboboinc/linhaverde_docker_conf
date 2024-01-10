@@ -23,6 +23,7 @@ services:
     ports:
       - "3000:3000"  
     volumes:
+      - ./filestore:/root/.local/share/Odoo/filestore
       - ./customs_addons:/mnt/extra-addons
       - ./etc:/etc/odoo
     restart: always

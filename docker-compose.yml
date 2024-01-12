@@ -1,40 +1,29 @@
 version: '3.1'
 services:
-  db:
-    image: postgres:15
-    user: root
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-    restart: always
-    volumes:
-      - ./postgresql:/var/lib/postgresql/data
-
-  odoo16:
-    image: odoo:16
-    user: root
-    environment:
-      - HOST=db
-      - USER=${USER}
-      - PASSWORD=${PASSWORD}
-    depends_on:
-      - db
-    ports:
-      - "3000:3000"  
-    volumes:
-      - ./customs_addons:/mnt/extra-addons
-      - ./etc:/etc/odoo
-      - ./odoo-web-data:/var/lib/odoo/
-    restart: always
-
-  nginx:
-    image: nginx:latest  
-    depends_on:
-      - odoo16
-    ports:
-      - "80:80"           
-    restart: always
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d  
-      - ./nginx/log:/var/log/nginx      
+    db:
+        image: postgres:15
+        env_file:
+        - .env
+        restart: always
+        volumes:
+        - ./postgresql:/var/lib/postgresql/data
+    odoo:
+      container_name: odoo
+      image: odoo:16
+      platform: linux/amd64
+      volumes:
+          - ./addons-extra:/mnt/extra-addons
+          - ./config:/etc/odoo
+          - ./odoo-web-data:/var/lib/odoo
+      ports:
+          - "3000:3000"
+    nginx:
+      container_name: nginx
+      image: nginx:latest
+      restart: unless-stopped
+      ports:
+          - 80:80
+      volumes:
+          - ./nginx/conf:/etc/nginx/conf.d
+volumes:
+    odoo-web-data:
